@@ -1,0 +1,19 @@
+.table {
+  border: lightseagreen 1px solid;
+  border-collapse: collapse !important;
+}
+
+td {
+  border-bottom: lightseagreen 1px solid;
+  border-collapse: collapse !important;
+}
+
+input {
+  &.ng-invalid.ng-touched {
+    border: 1px solid red;
+  }
+
+  &.ng-valid.ng-touched {
+    border: 1px solid green;
+  }
+}

@@ -1,0 +1,68 @@
+<div class="row justify-content-end m-2 navbar">
+    <p *ngIf="authService.isAuthenticated()" class="col-sm-2 btn-link" style="color: blanchedalmond; font-weight: bold;" (click)="openModal(content)">
+      Пользователь: {{this.getUsername()}}</p>
+    <button *ngIf="authService.isAuthenticated()" class="col-sm-1 btn btn-dark" (click)="authService.logout()">Выйти
+    </button>
+</div>
+
+<router-outlet></router-outlet>
+
+  <div *ngIf="!authService.isAuthenticated()" class="row justify-content-center m-5">
+    <div class="col-4">
+      <form [formGroup] = "form" (ngSubmit)="authService.login()" >
+        <div class="form-group row">
+          <label for="inputUserLogin" class="col-sm-2 col-form-label">Логин</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="inputUserLogin" placeholder="Логин" formControlName="login" [(ngModel)]="authService.userLogin">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="inputPosition" class="col-sm-2 col-form-label">Пароль</label>
+          <div class="col-sm-10">
+            <input type="password" class="form-control" id="inputPosition" placeholder="Пароль" formControlName="password" [(ngModel)]="authService.userPw">
+          </div>
+        </div>
+        <div *ngIf="authService.isErrored()" class="alert alert-danger offset-md-2" role="alert">
+          Неверный логин или пароль!
+        </div>
+        <div class="form-group row offset-md-6">
+          <div class="col-sm-10">
+            <button type="submit" class="btn btn-dark" [disabled]="form.invalid">Войти</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Смена пароля</h4>
+    <button type="button" class="close" aria-label="Закрыть" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row justify-content-center">
+      <a href="http://questapi.vybor.local/files/getinstruction">Инструкция по работе с системой</a>
+    </div>
+    <br>
+    <div class="row justify-content-center">
+      <div class="col-6">
+        <form [formGroup]="form1" (ngSubmit)="refreshPass(); modal.close()">
+          <div class="form-group row">
+            <div class="col-sm-10">
+              <input type="password" class="form-control" id="newpass" placeholder="Новый пароль"
+                     formControlName="newpass">
+            </div>
+          </div>
+          <div class="form-group row justify-content-end">
+            <div class="col-sm-10">
+              <button type="submit" class="btn btn-outline-dark" [disabled]="form1.invalid">Изменить пароль</button>
+              <button type="button" class="btn btn-dark" (click)="modal.close()">Закрыть</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</ng-template>

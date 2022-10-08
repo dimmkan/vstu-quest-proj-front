@@ -1,0 +1,133 @@
+<div class="container-fluid">
+  <button class="btn btn-dark m-2" routerLink="/">К общему списку</button>
+  <div class="col-12 justify-content-center">
+    <form [formGroup]="form" style="font-size: 13px">
+      <div class="card">
+        <div class="row">
+          <div class="col-1 m-1"><label for="fio">ФИО</label></div>
+          <div class="col-7 m-1"><input type="text" id="fio" placeholder="ФИО"
+                                        formControlName="fio" class="input-field"
+                                        value="{{candidate.fio}}" [(ngModel)]="candidate.fio"
+                                        [readOnly]="this.cookie.get('roles') === 'user' || this.cookie.get('roles') === 'security'">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-1 m-1"><label for="birthday">Дата рождения</label></div>
+          <div class="col-7 m-1"><input type="date" id="birthday" placeholder="Дата рождения" formControlName="birthday"
+                                        value="{{candidate.birthday}}"
+                                        [(ngModel)]="candidate.birthday"
+                                        [readOnly]="this.cookie.get('roles') === 'user' || this.cookie.get('roles') === 'security'">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-1 m-1"><label for="birthplace">Место рождения</label></div>
+          <div class="col-7 m-1"><input type="text" id="birthplace" placeholder="Место рождения"
+                                        formControlName="birthplace"
+                                        class="input-field"
+                                        value="{{candidate.birthplace}}" [(ngModel)]="candidate.birthplace"
+                                        [readOnly]="this.cookie.get('roles') === 'user' || this.cookie.get('roles') === 'security'">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-1 m-1"><label for="passport">Паспортные данные</label></div>
+          <div class="col-7 m-1"><textarea type="text" id="passport" placeholder="Паспортные данные"
+                                           formControlName="passport" value="{{candidate.passport}}"
+                                           [(ngModel)]="candidate.passport"
+                                           [readOnly]="this.cookie.get('roles') === 'user' || this.cookie.get('roles') === 'security'"></textarea>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-1 m-1"><label for="position">Должность</label></div>
+          <div class="col-7 m-1"><input type="text" id="position" placeholder="Должность"
+                                        formControlName="position" class="input-field"
+                                        value="{{candidate.position}}" [(ngModel)]="candidate.position"
+                                        [readOnly]="this.cookie.get('roles') === 'user' || this.cookie.get('roles') === 'security'">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-1 m-1"><label for="department">Подразделение</label></div>
+          <div class="col-7 m-1"><input type="text" [(ngModel)]="candidate.department" formControlName="department"
+                                        id="department"
+                                        placeholder="Подразделение" value="{{candidate.department}}"
+                                        [readOnly]="this.cookie.get('roles') === 'user' || this.cookie.get('roles') === 'security'">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-1 m-1"><label for="checkStartDate">Дата начала проверки</label></div>
+          <div class="col-7 m-1"><input type="date" id="checkStartDate" placeholder="Дата начала проверки"
+                                        formControlName="checkStartDate"
+                                        class="input-field"
+                                        value="{{candidate.checkStartDate}}" [(ngModel)]="candidate.checkStartDate"
+                                        [readOnly]="this.cookie.get('roles') === 'user' || this.cookie.get('roles') === 'kadry'">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-1 m-1"><label for="checkEndDate">Дата окончания проверки</label></div>
+          <div class="col-7 m-1"><input type="date" id="checkEndDate" placeholder="Дата окончания проверки"
+                                        formControlName="checkEndDate"
+                                        value="{{candidate.checkEndDate}}"
+                                        [(ngModel)]="candidate.checkEndDate"
+                                        [readOnly]="this.cookie.get('roles') === 'user' || this.cookie.get('roles') === 'kadry'">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-1 m-1"><label for="checkResult">Результат</label></div>
+          <div class="col-7 m-1"><input type="text" id="checkResult" placeholder="Результат"
+                                        formControlName="checkResult"
+                                        class="input-field"
+                                        value="{{candidate.checkResult}}" [(ngModel)]="candidate.checkResult"
+                                        [readOnly]="this.cookie.get('roles') === 'user' || this.cookie.get('roles') === 'kadry'">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-1 m-1"><label for="checkStatus">Проверка пройдена</label></div>
+          <div class="col-7 m-1">
+            <select name="checkStatus" id="checkStatus" formControlName="checkStatus"
+                    [(ngModel)]="candidate.checkStatus">
+              <option [ngValue]="'0'">ЛОЖЬ</option>
+              <option [ngValue]="'1'">ИСТИНА</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-1 m-1"><label for="checkComment">Комментарий СБ</label></div>
+          <div class="col-7 m-1"><textarea id="checkComment" placeholder="Комментарий СБ"
+                                           formControlName="checkComment"
+                                           value="{{candidate.checkComment}}" [(ngModel)]="candidate.checkComment"
+                                           [readOnly]="this.cookie.get('roles') === 'user' || this.cookie.get('roles') === 'kadry'"></textarea>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-1 m-1"><label for="endResult">Окончательный итог</label></div>
+          <div class="col-7 m-1"><textarea id="endResult" placeholder="Окончательный итог"
+                                           formControlName="endResult"
+                                           value="{{candidate.endResult}}" [(ngModel)]="candidate.endResult"
+                                           [readOnly]="this.cookie.get('roles') === 'user' || this.cookie.get('roles') === 'security'"></textarea>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <button class="btn btn-danger" (click)="openModal(content)"
+          [disabled]="this.cookie.get('roles') === 'user' || this.cookie.get('roles') === 'security'">Удалить запись
+  </button>
+  <button class="btn btn-dark" (click)="updateCandidate()" [disabled]="form.invalid">Сохранить изменения</button>
+</div>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Удалить запись?</h4>
+    <button type="button" class="close" aria-label="Закрыть" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row justify-content-center">
+      <p>Вы действительно хотите удалить эту запись?</p>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-danger" (click)="deleteCandidate(); modal.close()">Удалить</button>
+    <button type="button" class="btn btn-outline-dark" (click)="modal.close()">Закрыть</button>
+  </div>
+</ng-template>

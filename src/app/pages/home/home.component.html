@@ -1,0 +1,200 @@
+<div *ngIf="authService.isAuthenticated()" class="container-fluid">
+  <div class="row justify-content-end m-1">
+    <button *ngIf="!(this.cookie.get('roles') === 'user' || this.cookie.get('roles') === 'security')"
+            class="btn btn-outline-success" style="margin: 3px" (click)="saveToExcel()">Сохранить в Excel
+    </button>
+    <button class="btn btn-outline-dark" style="margin: 3px" (click)="this.displayFilter = !this.displayFilter"
+            [disabled]="this.cookie.get('roles') === 'user'">Показать фильтры
+    </button>
+    <button class="btn btn-outline-dark" style="margin: 3px" (click)="openModal(content)"
+            [disabled]="this.cookie.get('roles') === 'user' || this.cookie.get('roles') === 'security'">Добавить запись
+    </button>
+  </div>
+
+
+  <table class="table m-1">
+    <thead style="background-color: lightseagreen !important; color: blanchedalmond; font-size: 12px;" align="center">
+    <tr>
+      <th class="col-sm-1">№ п/п</th>
+      <th class="col-sm-1">ФИО кандидата</th>
+      <th class="col-sm-1">Дата рождения</th>
+      <th class="col-sm-1">Место рождения</th>
+      <th class="col-sm-1">Паспортные данные</th>
+      <th class="col-sm-1">Должность</th>
+      <th class="col-sm-1">Подразделение</th>
+      <th class="col-sm-1">Дата начала проверки</th>
+      <th class="col-sm-1">Дата окончания проверки</th>
+      <th class="col-sm-1">Результат</th>
+      <th class="col-sm-1">Проверка проведена</th>
+      <th class="col-sm-1">Комментарии сотрудника СБ</th>
+      <th class="col-sm-1">Анкета</th>
+      <th class="col-sm-1">Трудовая книжка</th>
+      <th class="col-sm-1">Окончательный итог</th>
+    </tr>
+    <tr *ngIf=displayFilter>
+      <th class="col-sm-1"></th>
+      <th class="col-sm-1"><input type="text" [(ngModel)]="candidateFilter.fio" placeholder="ФИО кандидата"></th>
+      <th class="col-sm-1"><input type="date" [(ngModel)]="candidateFilter.birthday" placeholder="Дата рождения"></th>
+      <th class="col-sm-1"><input type="text" [(ngModel)]="candidateFilter.birthplace" placeholder="Место рождения">
+      </th>
+      <th class="col-sm-1"><input type="text" [(ngModel)]="candidateFilter.passport" placeholder="Паспортные данные">
+      </th>
+      <th class="col-sm-1"><input type="text" [(ngModel)]="candidateFilter.position" placeholder="Должность"></th>
+      <th class="col-sm-1"><input type="text" [(ngModel)]="candidateFilter.department" placeholder="Подразделение"></th>
+      <th class="col-sm-1"><input type="date" [(ngModel)]="candidateFilter.checkStartDate"
+                                  placeholder="Дата начала проверки"></th>
+      <th class="col-sm-1"><input type="date" [(ngModel)]="candidateFilter.checkEndDate"
+                                  placeholder="Дата окончания проверки"></th>
+      <th class="col-sm-1"><input type="text" [(ngModel)]="candidateFilter.checkResult" placeholder="Результат"></th>
+      <th class="col-sm-1"><input type="text" [(ngModel)]="candidateFilter.checkStatus"
+                                  placeholder="Проверка проведена"></th>
+      <th class="col-sm-1"></th>
+      <th class="col-sm-1"></th>
+      <th class="col-sm-1"></th>
+      <th class="col-sm-1"></th>
+    </tr>
+    </thead>
+    <tbody align="center">
+    <tr *ngFor="let candidate of candidateService.candidates
+      | filterBy: candidateFilter
+      | paginate: {
+        itemsPerPage: 5,
+        currentPage: currentPg
+      } ; index as i
+      "
+        style="font-size: 12px"
+    >
+      <td>{{ i + 1 }}</td>
+      <td><a [routerLink]="['/candidate',candidate.id]"> {{candidate.fio}}</a></td>
+      <td>{{candidate.birthday | date: "dd.MM.yyyy"}}</td>
+      <td>{{candidate.birthplace}}</td>
+      <td>{{candidate.passport}}</td>
+      <td>{{candidate.position}}</td>
+      <td>{{candidate.department}}</td>
+      <td>{{candidate.checkStartDate | date: "dd.MM.yyyy"}}</td>
+      <td>{{candidate.checkEndDate | date: "dd.MM.yyyy"}}</td>
+      <td [bgColor]="candidate.checkResult.toLowerCase() == 'согласовано' ? 'lightgreen' : 'pink'">{{candidate.checkResult}}</td>
+      <td [bgColor]="candidate.checkStatus == '1' ? 'lightgreen' : 'pink'">{{candidate.checkStatus | boolPipe}}</td>
+      <td>{{candidate.checkComment}}</td>
+      <td>
+        <div class="row justify-content-end">
+          <button
+            *ngIf="candidate.questionnariesName && !(this.cookie.get('roles') === 'user' || this.cookie.get('roles') === 'security')"
+            type="button" class="close" aria-label="Закрыть"
+            (click)="deleteQuest($event)">
+            <span aria-hidden="true" id="dq{{candidate.id}}">&times;</span>
+          </button>
+        </div>
+        <div class="row">
+          <a *ngIf="candidate.questionnariesName"
+             href="http://questapi.vybor.local/candidates/downloadquest/{{candidate.id}}">{{candidate.questionnariesName}}</a>
+        </div>
+        <input
+          style="display: none"
+          type="file" (change)="onQChanged($event)"
+          accept="application/msword,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+          id="q{{candidate.id}}"
+          #qInput>
+        <button *ngIf="!candidate.questionnariesName" class="btn btn-outline-primary btn-sm" (click)="qInput.click()">
+          Загрузить
+        </button>
+      </td>
+      <td>
+        <div class="row justify-content-end">
+          <button
+            *ngIf="candidate.workbookName && !(this.cookie.get('roles') === 'user' || this.cookie.get('roles') === 'security')"
+            type="button" class="close btn-link" aria-label="Закрыть"
+            (click)="deleteWorkbook($event)">
+            <span aria-hidden="true" id="dw{{candidate.id}}">&times;</span>
+          </button>
+        </div>
+        <div class="row">
+          <a *ngIf="candidate.workbookName"
+             href="http://questapi.vybor.local/candidates/downloadworkbook/{{candidate.id}}">{{candidate.workbookName}}</a>
+        </div>
+        <input
+          style="display: none"
+          type="file" (change)="onWChanged($event)"
+          accept="application/msword,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+          id="w{{candidate.id}}"
+          #wInput>
+        <button *ngIf="!candidate.workbookName" class="btn btn-outline-primary btn-sm" (click)="wInput.click()">
+          Загрузить
+        </button>
+      </td>
+      <td>{{candidate.endResult}}</td>
+    </tr>
+    </tbody>
+  </table>
+  <div class="row justify-content-center">
+    <div class="col-3 offset-1">
+      <pagination-controls previousLabel="Предыдущая" nextLabel="Следующая"
+                           (pageChange)="currentPg = $event"></pagination-controls>
+    </div>
+  </div>
+</div>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Новая запись</h4>
+    <button type="button" class="close" aria-label="Закрыть" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row justify-content-center">
+      <div class="col-11">
+        <form [formGroup]="form" (ngSubmit)="addCandidate(); modal.close()">
+          <div class="form-group row">
+            <label for="fio" class="col-sm-2 col-form-label">ФИО</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="fio" placeholder="ФИО"
+                     formControlName="fio">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="birthday" class="col-sm-2 col-form-label">Дата рождения</label>
+            <div class="col-sm-10">
+              <input type="date" class="form-control" id="birthday" placeholder="Дата рождения"
+                     formControlName="birthday">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="birthplace" class="col-sm-2 col-form-label">Место рождения</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="birthplace" placeholder="Место рождения"
+                     formControlName="birthplace">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="passport" class="col-sm-2 col-form-label">Паспортные данные</label>
+            <div class="col-sm-10">
+              <textarea class="form-control" id="passport" placeholder="Паспортные данные"
+                        formControlName="passport"></textarea>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="position" class="col-sm-2 col-form-label">Должность</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="position" placeholder="Должность"
+                     formControlName="position">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="department" class="col-sm-2 col-form-label">Подразделение</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="department" placeholder="Подразделение"
+                     formControlName="department">
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-sm-10">
+              <button type="submit" class="btn btn-outline-dark" [disabled]="form.invalid">Добавить запись</button>
+              <button type="button" class="btn btn-dark" (click)="modal.close()">Закрыть</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</ng-template>
