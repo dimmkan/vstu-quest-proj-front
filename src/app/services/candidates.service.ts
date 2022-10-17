@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
+import { environment } from 'src/environments/environment';
 
 export interface Candidate {
   id: number;
@@ -39,7 +40,7 @@ export class CandidatesService {
   }
 
   reloadCand() {
-    this.http.get<Candidate[]>('http://questapi.vybor.local/candidates')
+    this.http.get<Candidate[]>(`${environment.api_url}/candidates`)
       .subscribe(response => {
         this.candidates = response
       })

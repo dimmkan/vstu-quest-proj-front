@@ -5,6 +5,7 @@ import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {CookieService} from "ngx-cookie-service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {ExcelService} from "../../services/excel.service";
+import { environment } from 'src/environments/environment';
 
 export interface DownloadData{
   'ФИО': string;
@@ -35,6 +36,7 @@ export class HomeComponent implements OnInit {
   displayFilter: boolean = false
   currentPg: any
   candidateFilter: any = {}
+  serverPath: string = environment.api_url;
 
   constructor(
     public authService: AuthService,
@@ -71,7 +73,7 @@ export class HomeComponent implements OnInit {
     const uploadData = new FormData();
     uploadData.append('file', selectedFile, selectedFile.name)
     uploadData.append('username', this.cookie.get('username'))
-    this.candidateService.http.post(`http://questapi.vybor.local/candidates/addquest/${id}`, uploadData)
+    this.candidateService.http.post(`${environment.api_url}/candidates/addquest/${id}`, uploadData)
       .subscribe(response => {
           this.candidateService.reloadCand()
         }
@@ -86,7 +88,7 @@ export class HomeComponent implements OnInit {
     const uploadData = new FormData();
     uploadData.append('file', selectedFile, selectedFile.name)
     uploadData.append('username', this.cookie.get('username'))
-    this.candidateService.http.post(`http://questapi.vybor.local/candidates/addworkbook/${id}`, uploadData)
+    this.candidateService.http.post(`${environment.api_url}/candidates/addworkbook/${id}`, uploadData)
       .subscribe(response => {
           this.candidateService.reloadCand()
         }
@@ -95,7 +97,7 @@ export class HomeComponent implements OnInit {
 
   addCandidate() {
     const formData = <Candidate>{...this.form.value}
-    this.candidateService.http.post(`http://questapi.vybor.local/candidates/add`, {
+    this.candidateService.http.post(`${environment.api_url}/candidates/add`, {
       username: this.cookie.get('username'),
       fio: formData.fio,
       birthday: formData.birthday,
@@ -118,7 +120,7 @@ export class HomeComponent implements OnInit {
   deleteQuest($event: Event) {
     //@ts-ignore
     let id = $event.target.id.substr(2)
-    this.candidateService.http.delete(`http://questapi.vybor.local/candidates/deletequest/${id}`,{body:{username:this.cookie.get('username')}})
+    this.candidateService.http.delete(`${environment.api_url}/candidates/deletequest/${id}`,{body:{username:this.cookie.get('username')}})
       .subscribe(
         response => {
           this.candidateService.reloadCand()
@@ -129,7 +131,7 @@ export class HomeComponent implements OnInit {
   deleteWorkbook($event: Event) {
     //@ts-ignore
     let id = $event.target.id.substr(2)
-    this.candidateService.http.delete(`http://questapi.vybor.local/candidates/deleteworkbook/${id}`, {body:{username:this.cookie.get('username')}})
+    this.candidateService.http.delete(`${environment.api_url}/candidates/deleteworkbook/${id}`, {body:{username:this.cookie.get('username')}})
       .subscribe(
         response => {
           this.candidateService.reloadCand()

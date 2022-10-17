@@ -4,6 +4,7 @@ import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {CookieService} from "ngx-cookie-service";
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-candidate',
@@ -55,7 +56,7 @@ export class CandidateComponent implements OnInit {
 
   deleteCandidate() {
     this.route.params.subscribe((params: Params) => {
-      this.candidateService.http.delete(`http://questapi.vybor.local/candidates/delete/${params.id}`,{body:{username:this.cookie.get('username')}})
+      this.candidateService.http.delete(`${environment.api_url}/candidates/delete/${params.id}`,{body:{username:this.cookie.get('username')}})
         .subscribe(
           () => {
             this.candidateService.candidates = this.candidateService.candidates.filter(p => p.id != +params.id)
@@ -67,7 +68,7 @@ export class CandidateComponent implements OnInit {
 
   updateCandidate() {
     this.route.params.subscribe((params: Params) => {
-      this.candidateService.http.put(`http://questapi.vybor.local/candidates/update/${params.id}`, {
+      this.candidateService.http.put(`${environment.api_url}/candidates/update/${params.id}`, {
         username: this.cookie.get('username'),
         id: params.id.toString(),
         fio: this.candidate.fio,

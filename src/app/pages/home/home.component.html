@@ -87,7 +87,7 @@
         </div>
         <div class="row">
           <a *ngIf="candidate.questionnariesName"
-             href="http://questapi.vybor.local/candidates/downloadquest/{{candidate.id}}">{{candidate.questionnariesName}}</a>
+             href="{{ serverPath }}/candidates/downloadquest/{{candidate.id}}">{{candidate.questionnariesName}}</a>
         </div>
         <input
           style="display: none"
@@ -110,7 +110,7 @@
         </div>
         <div class="row">
           <a *ngIf="candidate.workbookName"
-             href="http://questapi.vybor.local/candidates/downloadworkbook/{{candidate.id}}">{{candidate.workbookName}}</a>
+             href="{{ serverPath }}/candidates/downloadworkbook/{{candidate.id}}">{{candidate.workbookName}}</a>
         </div>
         <input
           style="display: none"

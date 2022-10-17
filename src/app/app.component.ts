@@ -4,6 +4,7 @@ import {CookieService} from "ngx-cookie-service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {Candidate} from "./services/candidates.service";
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -41,7 +42,7 @@ export class AppComponent {
 
   refreshPass() {
     const formData = <any>{...this.form1.value}
-    this.authService.http.post(`http://questapi.vybor.local/users/refreshpass/${this.cookieService.get('userId')}`, {
+    this.authService.http.post(`${environment.api_url}/users/refreshpass/${this.cookieService.get('userId')}`, {
       newpass: formData.newpass
     }).subscribe(() => {
           this.form1.reset()
